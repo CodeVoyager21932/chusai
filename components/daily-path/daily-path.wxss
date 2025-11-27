@@ -1,0 +1,130 @@
+.daily-path-container {
+  position: absolute;
+  top: -16rpx;
+  right: 16rpx;
+  z-index: 10;
+  opacity: 0;
+  transform: translateX(100rpx);
+  transition: all 0.4s ease;
+}
+
+.daily-path-container.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.path-bubble {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+  border-radius: 48rpx;
+  padding: 16rpx 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(220, 38, 38, 0.3);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8rpx); }
+}
+
+.bubble-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.bubble-content {
+  display: flex;
+  flex-direction: column;
+  color: #FFFFFF;
+}
+
+.bubble-title {
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.bubble-progress {
+  font-size: 20rpx;
+  opacity: 0.9;
+}
+
+.task-list {
+  position: absolute;
+  top: 80rpx;
+  right: 0;
+  width: 400rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #E5E7EB;
+}
+
+.header-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #1F2937;
+}
+
+.close-btn {
+  font-size: 48rpx;
+  color: #9CA3AF;
+  line-height: 1;
+  padding: 8rpx 16rpx;
+  margin: -8rpx -16rpx;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.task-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #DC2626;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.task-checkbox.checked {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.task-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-name {
+  font-size: 26rpx;
+  color: #1F2937;
+  margin-bottom: 4rpx;
+}
+
+.task-reward {
+  font-size: 22rpx;
+  color: #F59E0B;
+}

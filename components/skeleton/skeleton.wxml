@@ -1,0 +1,21 @@
+<!--components/skeleton/skeleton.wxml-->
+<view class="skeleton-container" wx:if="{{loading}}">
+  <!-- Header Skeleton -->
+  <view class="skeleton-header">
+    <view class="skeleton-bg skeleton-avatar"></view>
+    <view class="skeleton-title-group">
+      <view class="skeleton-bg skeleton-title"></view>
+      <view class="skeleton-bg skeleton-badge"></view>
+      <view class="skeleton-bg skeleton-text-sm"></view>
+    </view>
+  </view>
+
+  <!-- Content Skeleton -->
+  <view class="skeleton-content" wx:for="{{[1, 2, 3]}}" wx:key="*this">
+    <view class="skeleton-bg skeleton-section-title"></view>
+    <view class="skeleton-bg skeleton-paragraph"></view>
+    <view class="skeleton-bg skeleton-paragraph"></view>
+    <view class="skeleton-bg skeleton-paragraph short"></view>
+  </view>
+</view>
+<slot wx:else></slot>

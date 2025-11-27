@@ -1,0 +1,87 @@
+<!--components/daily-sign-modal/daily-sign-modal.wxml-->
+<view class="modal-container" wx:if="{{visible}}">
+  <!-- 遮罩层 -->
+  <view class="modal-mask" bindtap="onClose"></view>
+  
+  <!-- 内容区 -->
+  <view class="modal-content">
+    <!-- 关闭按钮 -->
+    <view class="close-btn" bindtap="onClose">
+      <text class="icon-close">✕</text>
+    </view>
+
+    <!-- 海报预览区 -->
+    <view class="poster-preview">
+      <!-- 隐藏的Canvas，用于离屏渲染 -->
+      <canvas 
+        type="2d" 
+        id="posterCanvas" 
+        class="poster-canvas"
+        style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+      ></canvas>
+      
+      <!-- 预览图（WXML布局，优先显示） -->
+      <view class="preview-layout" wx:if="{{showPreview && !posterPath}}">
+        <image 
+          class="preview-bg" 
+          src="{{todayQuote.image_url || '/images/default-bg.jpg'}}" 
+          mode="aspectFill"
+        />
+        <view class="preview-mask"></view>
+        
+        <!-- 日期印章 -->
+        <view class="preview-stamp">
+          <text class="stamp-month">{{currentMonth}}月</text>
+          <text class="stamp-day">{{currentDay}}</text>
+        </view>
+        
+        <!-- 诗词内容 -->
+        <view class="preview-quote">
+          <text class="quote-text">{{todayQuote.quote_content}}</text>
+          <text class="quote-author" wx:if="{{todayQuote.author}}">— {{todayQuote.author}}</text>
+        </view>
+        
+        <!-- 生成中提示 -->
+        <view class="generating-hint" wx:if="{{isGenerating}}">
+          <view class="hint-dot"></view>
+          <text>海报生成中...</text>
+        </view>
+      </view>
+      
+      <!-- 生成后显示的真实海报 -->
+      <image 
+        wx:if="{{posterPath}}" 
+        src="{{posterPath}}" 
+        class="poster-image"
+        mode="aspectFit"
+      ></image>
+    </view>
+
+    <!-- 今日宜忌 -->
+    <view class="lucky-tips" wx:if="{{todayQuote.lucky_tips}}">
+      <text class="tips-label">今日宜：</text>
+      <text class="tips-content">{{todayQuote.lucky_tips}}</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button 
+        class="btn-primary" 
+        bindtap="onSaveToAlbum"
+        disabled="{{isGenerating}}"
+      >
+        <text class="btn-icon">💾</text>
+        <text>保存到相册</text>
+      </button>
+      
+      <button 
+        class="btn-secondary" 
+        bindtap="onShareToFriend"
+        disabled="{{isGenerating}}"
+      >
+        <text class="btn-icon">📤</text>
+        <text>分享给好友</text>
+      </button>
+    </view>
+  </view>
+</view>

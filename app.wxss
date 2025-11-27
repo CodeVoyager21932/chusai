@@ -1,0 +1,138 @@
+/**app.wxss**/
+
+/* ==========================================================================
+   Design System: Modern Red Aesthetics (现代红色美学)
+   Reference: Apple Health, Airbnb, Modern Museum Apps
+   ========================================================================== */
+
+page {
+  /* --- Color Palette (色彩系统) --- */
+  /* Primary Red - 主题红 */
+  --primary-red: #E60012;
+  --primary-red-light: #FF4D4F;
+  --primary-red-dark: #C41D1D;
+  
+  /* Background - 背景色 */
+  --bg-page: #F5F7FA;
+  --bg-white: #FFFFFF;
+  --bg-surface: #FAFAFA;
+  
+  /* Text Colors - 文字色 */
+  --text-primary: #1F1F1F;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-hint: #BBBBBB;
+  
+  /* Accent - 点缀色 */
+  --accent-gold: #C5A065;
+  --accent-green: #10B981;
+  --accent-blue: #3B82F6;
+  
+  /* --- Shadows (柔和阴影) --- */
+  --shadow-card: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  --shadow-float: 0 12rpx 40rpx rgba(0, 0, 0, 0.1);
+  --shadow-red: 0 8rpx 24rpx rgba(230, 0, 18, 0.2);
+  
+  /* --- Border Radius (圆角系统) --- */
+  --radius-card: 16px;
+  --radius-inner: 8px;
+  --radius-button: 12px;
+  --radius-full: 9999px;
+
+  /* --- Spacing (间距系统) --- */
+  --spacing-xs: 8rpx;
+  --spacing-sm: 16rpx;
+  --spacing-md: 24rpx;
+  --spacing-lg: 32rpx;
+  --spacing-xl: 48rpx;
+
+  /* --- Safe Area --- */
+  --safe-area-bottom: env(safe-area-inset-bottom);
+
+  /* --- Gradient (渐变) --- */
+  --gradient-primary: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%);
+  --gradient-gold: linear-gradient(135deg, #C5A065 0%, #D4AF77 100%);
+
+  /* --- Global Base Styles --- */
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Roboto, sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Typography Utilities
+   ========================================================================== */
+
+/* Serif Font for Headings (Songti/Historical Feel) */
+.font-serif {
+  font-family: 'Songti SC', 'Noto Serif SC', 'Source Han Serif CN', 'STSong', 'AR PL New Sung', 'AR PL SungtiL GB', serif;
+  font-weight: 600;
+}
+
+/* Body Text Justification */
+.text-justified {
+  text-align: justify;
+}
+
+/* Text Colors */
+.text-main { color: var(--text-main); }
+.text-primary { color: var(--red-primary); }
+.text-accent { color: #C19D58; /* Gold-ish for text */ }
+
+/* ==========================================================================
+   Glassmorphism Utilities
+   ========================================================================== */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-card-rest);
+  border-radius: 32rpx;
+}
+
+/* Fallback for devices that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(20px)) {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* ==========================================================================
+   Layout Utilities
+   ========================================================================== */
+
+.flex-row { display: flex; flex-direction: row; align-items: center; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+.container {
+  padding: 0 var(--spacing-standard);
+  padding-bottom: calc(var(--spacing-standard) + var(--safe-area-bottom));
+}
+
+/* ==========================================================================
+   Animation Utilities
+   ========================================================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* Generic Button Hover Effect */
+.btn-hover {
+  transform: scale(0.96);
+  opacity: 0.9;
+  transition: all 0.1s ease-in-out;
+}

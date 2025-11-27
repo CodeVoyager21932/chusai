@@ -1,0 +1,90 @@
+<!-- 英雄长廊页面 -->
+<navigation-bar title="英雄长廊" showBack="{{true}}" showHome="{{true}}" background="transparent"></navigation-bar>
+<view class="hero-gallery-page">
+  <!-- 顶部背景装饰 -->
+  <view class="bg-decoration"></view>
+
+  <!-- 顶部筛选栏 (Floating Glass) -->
+  <scroll-view class="filter-scroll" scroll-x enable-flex>
+    <view class="filter-bar">
+      <view 
+        class="filter-item {{currentEra === 'all' ? 'active' : ''}}"
+        bindtap="onFilterChange"
+        data-era="all"
+      >
+        <text>全部</text>
+      </view>
+      <view 
+        class="filter-item {{currentEra === '革命时期' ? 'active' : ''}}"
+        bindtap="onFilterChange"
+        data-era="革命时期"
+      >
+        <text>革命时期</text>
+      </view>
+      <view 
+        class="filter-item {{currentEra === '建设时期' ? 'active' : ''}}"
+        bindtap="onFilterChange"
+        data-era="建设时期"
+      >
+        <text>建设时期</text>
+      </view>
+      <view 
+        class="filter-item {{currentEra === '改革时期' ? 'active' : ''}}"
+        bindtap="onFilterChange"
+        data-era="改革时期"
+      >
+        <text>改革时期</text>
+      </view>
+      <view 
+        class="filter-item {{currentEra === '新时代' ? 'active' : ''}}"
+        bindtap="onFilterChange"
+        data-era="新时代"
+      >
+        <text>新时代</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 英雄列表 (Waterfall/Cards) -->
+  <scroll-view class="hero-list" scroll-y>
+    <view class="list-padding">
+      <view 
+        class="hero-card card-hover animate-fade-in"
+        wx:for="{{filteredHeroes}}"
+        wx:key="id"
+        bindtap="onHeroClick"
+        data-hero="{{item}}"
+        style="animation-delay: {{index * 0.05}}s;"
+      >
+        <!-- 英雄头像 -->
+        <view class="hero-avatar-wrapper">
+          <image class="hero-avatar" src="{{item.avatar}}" mode="aspectFill" lazy-load />
+          <view class="era-badge {{item.eraStyle}}">{{item.era}}</view>
+        </view>
+
+        <!-- 英雄信息 -->
+        <view class="hero-info">
+          <view class="info-header">
+            <text class="hero-name font-serif">{{item.name}}</text>
+            <text class="hero-years">{{item.birth_year}} - {{item.death_year || '至今'}}</text>
+          </view>
+          <view class="hero-title-wrapper">
+            <text class="hero-title">{{item.title}}</text>
+          </view>
+          <view class="hero-brief">{{item.brief}}</view>
+        </view>
+
+        <!-- 装饰性箭头 -->
+        <view class="card-arrow">
+          <text class="icon-arrow">→</text>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{filteredHeroes.length === 0}}">
+        <image class="empty-icon" src="/images/empty-state.png" mode="widthFix" />
+        <text>暂无相关英雄数据</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

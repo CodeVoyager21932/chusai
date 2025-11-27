@@ -1,0 +1,182 @@
+/* 全局音频播放器 - 悬浮按钮 */
+.audio-player-float {
+  position: fixed;
+  bottom: 180rpx;
+  right: 32rpx;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+/* 迷你模式 */
+.player-mini {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+  box-shadow: 0 8rpx 24rpx rgba(220, 38, 38, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8rpx); }
+}
+
+.player-mini:active {
+  transform: scale(0.95);
+}
+
+.mini-icon {
+  font-size: 48rpx;
+  animation: none;
+}
+
+.mini-icon.playing {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* 展开模式 */
+.audio-player-float.expanded {
+  bottom: 120rpx;
+  right: 32rpx;
+  left: 32rpx;
+}
+
+.player-expanded {
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  box-shadow: 0 12rpx 48rpx rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.audio-icon {
+  font-size: 48rpx;
+  margin-right: 16rpx;
+}
+
+.audio-icon.playing {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.audio-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audio-subtitle {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.close-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: #9CA3AF;
+  line-height: 1;
+}
+
+.player-controls {
+  margin-bottom: 24rpx;
+}
+
+.progress-bar {
+  height: 6rpx;
+  background: #E5E7EB;
+  border-radius: 3rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #DC2626 0%, #EF4444 100%);
+  border-radius: 3rpx;
+  transition: width 0.3s ease;
+}
+
+.time-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.player-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32rpx;
+}
+
+.control-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  background: #F3F4F6;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+  background: #E5E7EB;
+}
+
+.play-btn {
+  width: 96rpx;
+  height: 96rpx;
+  font-size: 40rpx;
+  background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 16rpx rgba(220, 38, 38, 0.3);
+}
+
+.play-btn:active {
+  box-shadow: 0 2rpx 8rpx rgba(220, 38, 38, 0.3);
+}

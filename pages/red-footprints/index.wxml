@@ -1,0 +1,36 @@
+<navigation-bar title="红色足迹" />
+
+<view class="red-footprints">
+  <!-- 地图视图 -->
+  <map 
+    id="redMap"
+    class="map-container"
+    longitude="{{longitude}}"
+    latitude="{{latitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    bindmarkertap="onMarkerTap"
+    show-location
+  />
+
+  <!-- 底部信息卡片 -->
+  <view class="info-panel">
+    <view class="panel-header">
+      <text class="panel-title">附近的红色地标</text>
+      <text class="location-count">{{markers.length}} 个</text>
+    </view>
+
+    <scroll-view class="location-list" scroll-y>
+      <view wx:for="{{locations}}" wx:key="id" 
+            class="location-item"
+            bindtap="navigateToLocation" data-location="{{item}}">
+        <view class="location-icon">📍</view>
+        <view class="location-info">
+          <text class="location-name">{{item.name}}</text>
+          <text class="location-distance">{{item.distance}}km</text>
+        </view>
+        <view class="location-arrow">→</view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

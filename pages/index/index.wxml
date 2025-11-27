@@ -1,0 +1,245 @@
+<!--index.wxml-->
+<!-- A 区：顶部导航与搜索 (吸顶 + 沉浸式适配) -->
+<view class="custom-header" style="height: {{totalHeaderHeight}}px; padding-top: {{statusBarHeight}}px;">
+  <view class="nav-bar-content" style="height: {{navBarHeight}}px;">
+    <!-- 用户头像 -->
+    <image 
+      class="nav-avatar" 
+      style="width: {{capsuleHeight}}px; height: {{capsuleHeight}}px;"
+      src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" 
+      bindtap="goToProfile"
+    />
+    
+    <!-- 搜索栏 -->
+    <view class="nav-search-bar" style="height: {{capsuleHeight}}px;" bindtap="openGlobalSearch">
+      <text class="search-icon">🔍</text>
+      <text class="search-placeholder">搜索英雄、史料...</text>
+    </view>
+  </view>
+</view>
+
+<view class="home-page" style="padding-top: {{totalHeaderHeight}}px;">
+  <!-- 顶部背景装饰 (Curtain Effect) -->
+  <view class="header-curtain"></view>
+
+  <!-- 今日英雄卡片 (Premium Card) -->
+  <view class="section-title animate-fade-in" style="animation-delay: 0.1s;">
+    <text class="font-serif">今日英雄</text>
+    <text class="date-badge">{{todayDate}}</text>
+  </view>
+  
+  <wxs module="gesture" src="./card-gesture.wxs"></wxs>
+
+  <!-- B 区：首屏核心展示区 (Hero Section) -->
+  <view class="hero-card-container">
+  <view class="today-hero-card card-hover animate-fade-in" 
+        style="animation-delay: 0.2s;" 
+        bindtouchstart="{{gesture.touchStart}}"
+        bindtouchmove="{{gesture.touchMove}}"
+        bindtouchend="{{gesture.touchEnd}}"
+        bindtouchcancel="{{gesture.touchEnd}}"
+  >
+    <view class="card-glare" style="{{heroCardGlare}}"></view>
+    <view class="hero-bg-gradient"></view>
+    
+    <!-- 英雄内容 -->
+    <view class="hero-content" bindtap="goToHeroDetail">
+      <view class="hero-badge">
+        <text>⭐ 每日推荐</text>
+      </view>
+      <view class="hero-main">
+        <view class="hero-avatar-wrapper">
+          <image 
+            class="hero-avatar" 
+            src="{{todayHero.avatar}}" 
+            mode="aspectFill"
+            binderror="onImageError"
+          />
+          <view class="hero-placeholder" wx:if="{{!todayHero.avatarLoaded}}">
+            <text class="placeholder-text">{{todayHero.name[0]}}</text>
+          </view>
+        </view>
+        <view class="hero-text-group">
+          <text class="hero-name font-serif">{{todayHero.name}}</text>
+          <text class="hero-title">{{todayHero.title || '革命英雄'}}</text>
+          <text class="hero-desc">{{todayHero.brief}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 每日成长任务覆盖层 (Glassmorphism) -->
+    <view class="daily-task-overlay" bindtap="goToDailyTask" catchtap="goToDailyTask">
+      <view class="task-capsule">
+        <view class="task-icon">✨</view>
+        <view class="task-content">
+          <text class="task-label">今日任务</text>
+          <text class="task-desc">{{dailyTaskDesc}}</text>
+        </view>
+        <view class="task-arrow">→</view>
+      </view>
+    </view>
+  </view>
+  <!-- 每日成长路径 - 挂载在卡片右上角 -->
+  <daily-path />
+  </view>
+
+  <!-- C 区：核心功能矩阵 (2x2 大卡片) -->
+  <view class="section-title animate-fade-in" style="animation-delay: 0.3s;">
+    <text class="font-serif">核心功能</text>
+  </view>
+
+  <view class="main-function-grid animate-fade-in" style="animation-delay: 0.4s;">
+    <!-- Card 1: AI 讲解员 -->
+    <view class="main-card card-hover" bindtap="goToAIChat">
+      <view class="card-bg gradient-ai"></view>
+      <view class="card-content">
+        <view class="card-icon-large">🤖</view>
+        <view class="card-text">
+          <text class="card-title">AI 讲解员</text>
+          <text class="card-subtitle">互动对话</text>
+        </view>
+      </view>
+      <view class="card-decoration">💬</view>
+    </view>
+
+    <!-- Card 2: 时空图谱 -->
+    <view class="main-card card-hover" bindtap="goToGraph">
+      <view class="card-bg gradient-graph"></view>
+      <view class="card-content">
+        <view class="card-icon-large">🕸️</view>
+        <view class="card-text">
+          <text class="card-title">时空图谱</text>
+          <text class="card-subtitle">可视化历史</text>
+        </view>
+      </view>
+      <view class="card-decoration">🗺️</view>
+    </view>
+
+    <!-- Card 3: 星火燎原 -->
+    <view class="main-card card-hover" bindtap="goToSparkPrairie">
+      <view class="card-bg gradient-spark"></view>
+      <view class="card-content">
+        <view class="card-icon-large">🔥</view>
+        <view class="card-text">
+          <text class="card-title">星火燎原</text>
+          <text class="card-subtitle">学习 & PK</text>
+        </view>
+      </view>
+      <view class="card-decoration">⚔️</view>
+    </view>
+
+    <!-- Card 4: 红色珍藏 -->
+    <view class="main-card card-hover" bindtap="goToRedHeritage">
+      <view class="card-bg gradient-heritage"></view>
+      <view class="card-content">
+        <view class="card-icon-large">🏛️</view>
+        <view class="card-text">
+          <text class="card-title">红色珍藏</text>
+          <text class="card-subtitle">展厅 & 解密</text>
+        </view>
+        <!-- 新获取徽标 -->
+        <view wx:if="{{hasNewHeritage}}" class="new-badge">新获取</view>
+      </view>
+      <view class="card-decoration">🎁</view>
+    </view>
+  </view>
+
+  <!-- D 区：探索发现区 (Discovery Zone) -->
+  <view class="section-title animate-fade-in" style="animation-delay: 0.5s;">
+    <text class="font-serif">探索发现</text>
+  </view>
+
+  <!-- Item 1: 红色足迹 - 宽幅矩形卡片 -->
+  <view class="discovery-section animate-fade-in" style="animation-delay: 0.6s;">
+    <view class="footprints-card" bindtap="goToRedFootprints">
+      <view class="footprints-bg"></view>
+      <view class="footprints-content">
+        <view class="footprints-icon">📍</view>
+        <view class="footprints-text">
+          <text class="footprints-title">红色足迹</text>
+          <text class="footprints-desc">寻找身边的红色地标</text>
+        </view>
+        <view class="footprints-arrow">→</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Item 2: 英雄长廊 - 横向滚动列表 -->
+  <view class="hero-gallery-section animate-fade-in" style="animation-delay: 0.7s;">
+    <view class="gallery-header">
+      <text class="gallery-title">英雄长廊</text>
+      <view class="gallery-more" bindtap="goToHeroes">
+        <text>查看全部</text>
+        <text class="more-arrow">→</text>
+      </view>
+    </view>
+    
+    <scroll-view class="hero-scroll" scroll-x enable-flex>
+      <view class="hero-list">
+        <view wx:for="{{heroList}}" wx:key="id" 
+              class="hero-item" 
+              bindtap="goToHeroDetailById" 
+              data-id="{{item.id}}">
+          <image class="hero-avatar-small" src="{{item.avatar}}" mode="aspectFill" />
+          <text class="hero-name-small">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 全局音频播放器 -->
+  <audio-player></audio-player>
+
+  <!-- 学习统计 (Dashboard Widget) -->
+  <view class="stats-section animate-fade-in" style="animation-delay: 0.4s;">
+    <view class="stats-card card-hover">
+      <view class="stats-header">
+        <text class="font-serif title-medium">学习成就</text>
+        <view class="level-badge" bindtap="showBadgeDetail">Lv.{{userLevel || 1}} 星火燎原</view>
+      </view>
+      <view class="stats-row">
+        <view class="stat-item">
+          <text class="stat-num">{{stats.continuous_days}}<text class="stat-unit">天</text></text>
+          <text class="stat-label">连续打卡</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-num">{{stats.mastered_cards}}<text class="stat-unit">张</text></text>
+          <text class="stat-label">掌握卡片</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-num">{{stats.ai_chat_count}}<text class="stat-unit">次</text></text>
+          <text class="stat-label">AI互动</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Floating Action Button (FAB) for Daily Sign -->
+  <view class="fab-daily-sign animate-fade-in" bindtap="onOpenDailySign">
+    <text class="fab-icon">📅</text>
+    <text class="fab-text">日签</text>
+  </view>
+</view>
+
+<!-- 日签弹窗 -->
+<!-- 日签弹窗 (时空来信) -->
+<daily-letter 
+  visible="{{showDailySign}}" 
+  content="{{todayQuote.quote_content}}"
+  quote="{{todayQuote.quote_content}}"
+  author="{{todayQuote.author}}"
+  bind:close="onCloseDailySign"
+  bind:checkin="onDailyCheckIn"
+></daily-letter>
+
+<!-- 徽章详情弹窗 -->
+<badge-modal
+  visible="{{showBadgeModal}}"
+  badge="{{currentBadge}}"
+  bind:close="onCloseBadgeModal"
+></badge-modal>
+
+<!-- 全局搜索组件 -->
+<global-search id="global-search" />

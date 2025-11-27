@@ -1,0 +1,88 @@
+<!--pages/knowledge-graph/index.wxml-->
+<navigation-bar title="历史长河" showBack="{{true}}" showHome="{{true}}" background="transparent"></navigation-bar>
+
+<view class="graph-page">
+  <!-- 顶部控制栏 (Glassmorphism) -->
+  <view class="control-bar-glass animate-fade-in">
+    <view class="search-bar">
+      <text class="icon-search">🔍</text>
+      <input class="search-input" placeholder="搜索历史事件/人物" placeholder-class="search-placeholder" />
+    </view>
+    <view class="view-toggle">
+      <view class="toggle-item {{currentView === 'timeline' ? 'active' : ''}}" bindtap="switchView" data-view="timeline">
+        <text>时间轴</text>
+      </view>
+      <view class="toggle-item {{currentView === 'graph' ? 'active' : ''}}" bindtap="switchView" data-view="graph">
+        <text>星系图</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 视图内容区域 -->
+  <view class="view-container">
+    
+    <!-- 1. 时间轴视图 (Timeline View) -->
+    <scroll-view 
+      wx:if="{{currentView === 'timeline'}}" 
+      scroll-y 
+      class="timeline-scroll animate-fade-in"
+      enable-back-to-top
+    >
+      <view class="timeline-container">
+        <view class="timeline-line"></view>
+        
+        <block wx:for="{{timelineData}}" wx:key="id">
+          <view class="timeline-item {{index % 2 === 0 ? 'left' : 'right'}} animate-slide-up" style="animation-delay: {{index * 0.1}}s">
+            <view class="timeline-dot">
+              <view class="dot-core"></view>
+              <view class="dot-ripple"></view>
+            </view>
+            <view class="timeline-content card-hover" bindtap="onEventTap" data-id="{{item.id}}">
+              <view class="event-year font-serif">{{item.year}}</view>
+              <view class="event-card">
+                <image class="event-img" src="{{item.image}}" mode="aspectFill" lazy-load />
+                <view class="event-info">
+                  <text class="event-title">{{item.title}}</text>
+                  <text class="event-desc">{{item.description}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+        
+        <!-- 底部留白 -->
+        <view style="height: 120rpx;"></view>
+      </view>
+    </scroll-view>
+
+    <!-- 2. 知识图谱视图 (Graph View) -->
+    <view wx:if="{{currentView === 'graph'}}" class="graph-container animate-fade-in">
+      <!-- 星空背景 -->
+      <view class="starry-bg"></view>
+      
+      <!-- Canvas 区域 -->
+      <canvas type="2d" id="knowledgeGraph" class="graph-canvas"
+        bindtouchstart="onTouchStart"
+        bindtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd"
+      ></canvas>
+      
+      <!-- 底部图例 -->
+      <view class="legend-panel glass-panel">
+        <view class="legend-item">
+          <view class="dot event"></view>
+          <text>事件</text>
+        </view>
+        <view class="legend-item">
+          <view class="dot person"></view>
+          <text>人物</text>
+        </view>
+        <view class="legend-item">
+          <view class="dot location"></view>
+          <text>地点</text>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>

@@ -1,0 +1,81 @@
+/* components/loading-star/loading-star.wxss */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.star-system {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core-star {
+  font-size: 60rpx;
+  color: #D32F2F;
+  z-index: 10;
+  animation: pulse-star 1.5s ease-in-out infinite;
+  text-shadow: 0 0 20rpx rgba(211, 47, 47, 0.5);
+}
+
+@keyframes pulse-star {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; text-shadow: 0 0 40rpx rgba(211, 47, 47, 0.8); }
+}
+
+.particle {
+  position: absolute;
+  width: 8rpx;
+  height: 8rpx;
+  background: #FF5252; /* 荧光红 */
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* 粒子汇聚动画 */
+/* 
+  粒子从四周向中心汇聚
+  translate初始位置为圆周上的点
+*/
+.p1 { animation: converge 1.5s ease-in infinite; transform: translate(0, -60rpx); }
+.p2 { animation: converge 1.5s ease-in infinite 0.2s; transform: translate(42rpx, -42rpx); }
+.p3 { animation: converge 1.5s ease-in infinite 0.4s; transform: translate(60rpx, 0); }
+.p4 { animation: converge 1.5s ease-in infinite 0.6s; transform: translate(42rpx, 42rpx); }
+.p5 { animation: converge 1.5s ease-in infinite 0.8s; transform: translate(0, 60rpx); }
+.p6 { animation: converge 1.5s ease-in infinite 1.0s; transform: translate(-42rpx, 42rpx); }
+.p7 { animation: converge 1.5s ease-in infinite 1.2s; transform: translate(-60rpx, 0); }
+.p8 { animation: converge 1.5s ease-in infinite 1.4s; transform: translate(-42rpx, -42rpx); }
+
+@keyframes converge {
+  0% {
+    opacity: 0;
+    /* 保持初始位置，由具体的 class 定义 */
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5); /* 汇聚到中心 */
+  }
+}
+
+.loading-text {
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  letter-spacing: 2rpx;
+  font-family: 'Songti SC', serif;
+  animation: fade-text 1.5s ease-in-out infinite;
+}
+
+@keyframes fade-text {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}

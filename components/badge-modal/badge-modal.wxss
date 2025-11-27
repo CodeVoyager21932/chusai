@@ -1,0 +1,217 @@
+/* components/badge-modal/badge-modal.wxss */
+.badge-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-modal.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+.modal-content {
+  position: relative;
+  width: 600rpx;
+  background: linear-gradient(180deg, #2C2C2C 0%, #1A1A1A 100%);
+  border-radius: 40rpx;
+  padding: 60rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2rpx solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.5);
+}
+
+/* 光效背景 */
+.light-burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600rpx;
+  height: 600rpx;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  animation: rotate-light 10s linear infinite;
+}
+
+@keyframes rotate-light {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 3D 徽章舞台 */
+.badge-stage {
+  position: relative;
+  width: 300rpx;
+  height: 300rpx;
+  perspective: 1000px;
+  z-index: 1;
+  margin-bottom: 40rpx;
+}
+
+.badge-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: float-rotate 6s ease-in-out infinite;
+}
+
+@keyframes float-rotate {
+  0%, 100% { transform: translateY(0) rotateY(0deg); }
+  50% { transform: translateY(-20rpx) rotateY(15deg); }
+}
+
+.badge-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20rpx rgba(255, 255, 255, 0.5);
+  border: 4rpx solid #FFF8E1;
+}
+
+.badge-face.front {
+  transform: translateZ(20rpx);
+}
+
+.badge-face.back {
+  transform: translateZ(-20rpx) rotateY(180deg);
+  background: #B8860B;
+}
+
+/* 侧面模拟 (通过多个层叠加或伪元素，这里简化处理) */
+.badge-side {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #DAA520;
+  transform: translateZ(0);
+}
+
+.badge-inner {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  border: 2rpx dashed rgba(139, 69, 19, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-icon {
+  font-size: 120rpx;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0,0,0,0.2));
+}
+
+.badge-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, transparent 40%);
+  opacity: 0.6;
+}
+
+.badge-shadow {
+  position: absolute;
+  bottom: -40rpx;
+  left: 50%;
+  width: 160rpx;
+  height: 20rpx;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  filter: blur(8rpx);
+  animation: shadow-scale 6s ease-in-out infinite;
+}
+
+@keyframes shadow-scale {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
+  50% { transform: translateX(-50%) scale(0.8); opacity: 0.2; }
+}
+
+/* 文本信息 */
+.info-section {
+  text-align: center;
+  z-index: 1;
+  margin-bottom: 40rpx;
+}
+
+.badge-name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: 16rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.5);
+}
+
+.badge-desc {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16rpx;
+  line-height: 1.5;
+}
+
+.badge-meta {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 按钮 */
+.action-btn {
+  width: 100%;
+  padding: 24rpx 0;
+  background: linear-gradient(90deg, #FFD700 0%, #FFA000 100%);
+  border-radius: 48rpx;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #3E2723;
+  box-shadow: 0 8rpx 20rpx rgba(255, 160, 0, 0.3);
+  z-index: 1;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+/* 入场动画 */
+.animate-pop-in {
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}

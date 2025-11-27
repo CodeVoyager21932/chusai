@@ -1,0 +1,42 @@
+<!-- 全局音频播放器 - 悬浮按钮 -->
+<view wx:if="{{isPlaying || isPaused}}" class="audio-player-float {{expanded ? 'expanded' : ''}}">
+  <!-- 迷你模式 -->
+  <view wx:if="{{!expanded}}" class="player-mini" bindtap="toggleExpand">
+    <view class="mini-icon {{isPlaying ? 'playing' : ''}}">
+      <text>🎵</text>
+    </view>
+  </view>
+
+  <!-- 展开模式 -->
+  <view wx:else class="player-expanded" catchtap="stopPropagation">
+    <view class="player-header">
+      <view class="header-left">
+        <view class="audio-icon {{isPlaying ? 'playing' : ''}}">🎵</view>
+        <view class="audio-info">
+          <text class="audio-title">{{currentAudio.title}}</text>
+          <text class="audio-subtitle">{{currentAudio.subtitle}}</text>
+        </view>
+      </view>
+      <view class="close-btn" bindtap="toggleExpand">×</view>
+    </view>
+
+    <view class="player-controls">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progress}}%"></view>
+      </view>
+      <view class="time-info">
+        <text class="current-time">{{currentTime}}</text>
+        <text class="total-time">{{totalTime}}</text>
+      </view>
+    </view>
+
+    <view class="player-buttons">
+      <view class="control-btn" bindtap="onPrev">⏮️</view>
+      <view class="control-btn play-btn" bindtap="onTogglePlay">
+        <text>{{isPlaying ? '⏸️' : '▶️'}}</text>
+      </view>
+      <view class="control-btn" bindtap="onNext">⏭️</view>
+      <view class="control-btn" bindtap="onClose">🗙</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,508 @@
+<navigation-bar title="星火燎原" />
+
+<view class="page">
+  <!-- 顶部装饰 -->
+  <view class="header-decoration"></view>
+  
+  <!-- 顶部悬浮切换栏 (Floating Tabs) -->
+  <view class="floating-tabs-container">
+    <view class="floating-tabs">
+      <view class="floating-tab {{mode === 'learn' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="learn">
+        <text class="tab-emoji">📚</text>
+        <text class="tab-label">学</text>
+      </view>
+      <view class="floating-tab {{mode === 'practice' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="practice">
+        <text class="tab-emoji">✍️</text>
+        <text class="tab-label">练</text>
+      </view>
+      <view class="floating-tab {{mode === 'battle' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="battle">
+        <text class="tab-emoji">⚔️</text>
+        <text class="tab-label">测</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学习模式 - Tinder 风格滑动卡片 -->
+  <view wx:if="{{mode === 'learn'}}" class="content mode-learn">
+    <!-- A区：顶部区域 - Tabs + 进度条 -->
+    <view class="top-area">
+      <!-- 极细进度指示器 -->
+      <view class="slim-progress-bar">
+        <view class="slim-progress-track">
+          <view class="slim-progress-fill" style="width: {{(currentIndex / cards.length) * 100}}%"></view>
+        </view>
+        <view class="progress-count-badge">
+          <text class="count-text">{{currentIndex}}/{{cards.length}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- B区：卡片舞台 - 自动占据剩余空间 -->
+    <view wx:if="{{cards.length > 0 && currentIndex < cards.length}}" class="card-stage">
+      <!-- 卡片堆叠容器 - 使用绝对定位 -->
+      <view class="card-stack-absolute">
+        <!-- 下一张卡片（背景层，绝对定位，微缩 + 降低亮度） -->
+        <view wx:if="{{currentIndex + 1 < cards.length}}" class="stack-card stack-card-next">
+          <image class="stack-card-bg" src="{{cards[currentIndex + 1].front_image}}" mode="aspectFill"></image>
+          <view class="stack-card-overlay"></view>
+          <view class="stack-card-content">
+            <text class="stack-card-title font-serif">{{cards[currentIndex + 1].front_title}}</text>
+          </view>
+        </view>
+
+        <!-- 当前卡片（顶层，绝对定位，可拖拽） -->
+        <view class="stack-card stack-card-top"
+              style="transform: translateX({{swipeX}}px) translateY({{swipeY}}px) rotate({{swipeRotate}}deg); opacity: {{swipeOpacity}};"
+              bindtouchstart="onTouchStart"
+              bindtouchmove="onTouchMove"
+              bindtouchend="onTouchEnd"
+              bindtap="flipCard">
+          
+          <!-- 左滑覆盖层（待复习） -->
+          <view class="swipe-overlay swipe-left" style="opacity: {{swipeLeftOpacity}};">
+            <view class="overlay-icon">↺</view>
+            <text class="overlay-text">待复习</text>
+          </view>
+
+          <!-- 右滑覆盖层（已掌握） -->
+          <view class="swipe-overlay swipe-right" style="opacity: {{swipeRightOpacity}};">
+            <view class="overlay-icon">✓</view>
+            <text class="overlay-text">已掌握</text>
+          </view>
+
+          <!-- 3D翻转卡片 -->
+          <view class="card-flip-container {{flipped ? 'flipped' : ''}}">
+            <!-- 正面 - 全屏历史图片 + 底部渐变蒙层 -->
+            <view class="card card-front-image">
+              <image wx:if="{{cards[currentIndex].front_image}}" class="card-bg-image" src="{{cards[currentIndex].front_image}}" mode="aspectFill" lazy-load></image>
+              <view wx:else class="card-placeholder-bg">
+                <text class="placeholder-icon">🏛️</text>
+              </view>
+              <view class="card-gradient-overlay"></view>
+              <view class="card-front-content">
+                <view class="era-badge-float">{{cards[currentIndex].category}}</view>
+                <view class="card-bottom-info">
+                  <text class="card-title-white font-serif">{{cards[currentIndex].front_title}}</text>
+                  <view class="flip-hint-white">
+                    <text class="hint-icon">👆</text>
+                    <text class="hint-text">轻触翻转 / 左右滑动</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 背面 - 详细知识点 -->
+            <view class="card card-back-detail">
+              <view class="card-decoration-top"></view>
+              <view class="card-back-wrapper">
+                <view class="era-badge">{{cards[currentIndex].category}}</view>
+                <scroll-view class="content-scroll" scroll-y>
+                  <text class="content-text">{{cards[currentIndex].back_content}}</text>
+                </scroll-view>
+                <view class="keywords-wrapper">
+                  <text wx:for="{{cards[currentIndex].back_keywords}}" wx:key="*this" class="keyword-tag">{{item}}</text>
+                </view>
+                <button class="btn-ai-detail" bindtap="openAIDetail" catchtap="openAIDetail">
+                  <text class="ai-icon">🤖</text>
+                  <text>AI 详解</text>
+                </button>
+              </view>
+              <view class="card-decoration-bottom"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 星火汇聚动画 -->
+      <view wx:if="{{showSparks}}" class="spark-particles">
+        <view class="spark spark-1"></view>
+        <view class="spark spark-2"></view>
+        <view class="spark spark-3"></view>
+        <view class="spark spark-4"></view>
+        <view class="spark spark-5"></view>
+      </view>
+    </view>
+
+    <!-- C区：底部操作栏 -->
+    <view wx:if="{{cards.length > 0 && currentIndex < cards.length}}" class="action-area">
+      <button class="action-btn action-btn-review" bindtap="onReviewCard">
+        <view class="action-btn-circle">
+          <text class="action-icon">✗</text>
+        </view>
+        <text class="action-btn-label">待复习</text>
+      </button>
+      <button class="action-btn action-btn-flip" bindtap="flipCard">
+        <view class="action-btn-circle action-btn-large">
+          <text class="action-icon">↻</text>
+        </view>
+        <text class="action-btn-label">翻转</text>
+      </button>
+      <button class="action-btn action-btn-master" bindtap="onMasterCard">
+        <view class="action-btn-circle">
+          <text class="action-icon">✓</text>
+        </view>
+        <text class="action-btn-label">已掌握</text>
+      </button>
+    </view>
+
+    <!-- 空状态 - 今日任务完成 -->
+    <view wx:else class="completion-screen">
+      <view class="completion-illustration">
+        <text class="completion-emoji">🎉</text>
+        <view class="completion-sparkles">
+          <text class="sparkle sparkle-1">✨</text>
+          <text class="sparkle sparkle-2">✨</text>
+          <text class="sparkle sparkle-3">✨</text>
+        </view>
+      </view>
+      <text class="completion-title font-serif">今日任务完成</text>
+      <text class="completion-desc">已掌握 {{cards.length}} 个知识点</text>
+      <view class="completion-stats">
+        <view class="stat-badge">
+          <text class="stat-icon">🔥</text>
+          <text class="stat-value">{{cards.length}}</text>
+          <text class="stat-label">卡片</text>
+        </view>
+        <view class="stat-badge">
+          <text class="stat-icon">⭐</text>
+          <text class="stat-value">+{{cards.length * 5}}</text>
+          <text class="stat-label">积分</text>
+        </view>
+      </view>
+      <view class="completion-actions">
+        <button class="completion-btn btn-restart" bindtap="restart">
+          <text>重新学习</text>
+        </button>
+        <button class="completion-btn btn-practice" bindtap="switchToPractice">
+          <text>开始练习</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 练习模式 - 游戏大厅风格 -->
+  <view wx:elif="{{mode === 'practice'}}" class="content mode-practice">
+    <!-- 开始界面 - 游戏大厅 -->
+    <view wx:if="{{!quizStarted}}" class="game-lobby">
+      <!-- 背景装饰 -->
+      <view class="lobby-decoration">
+        <text class="deco-star deco-1">★</text>
+        <text class="deco-star deco-2">★</text>
+        <text class="deco-star deco-3">★</text>
+        <view class="deco-wave"></view>
+      </view>
+
+      <!-- 标题区 -->
+      <view class="lobby-header">
+        <view class="lobby-icon">🏆</view>
+        <text class="lobby-title font-serif">知识闯关</text>
+        <text class="lobby-subtitle">检验学习成果</text>
+      </view>
+
+      <!-- 仪表盘卡片 - CSS Grid -->
+      <view class="dashboard-grid">
+        <view class="dashboard-card">
+          <text class="dashboard-icon">📝</text>
+          <text class="dashboard-value">5</text>
+          <text class="dashboard-label">题目</text>
+        </view>
+        <view class="dashboard-card">
+          <text class="dashboard-icon">⭐</text>
+          <text class="dashboard-value">20</text>
+          <text class="dashboard-label">分/题</text>
+        </view>
+        <view class="dashboard-card">
+          <text class="dashboard-icon">🎯</text>
+          <text class="dashboard-value">85%</text>
+          <text class="dashboard-label">历史胜率</text>
+        </view>
+        <view class="dashboard-card">
+          <text class="dashboard-icon">🔥</text>
+          <text class="dashboard-value">12</text>
+          <text class="dashboard-label">连胜记录</text>
+        </view>
+      </view>
+
+      <!-- 主按钮 CTA - 流光渐变 -->
+      <button class="cta-button cta-glow" bindtap="startQuiz">
+        <view class="cta-shine"></view>
+        <text class="cta-text">开始闯关</text>
+      </button>
+    </view>
+
+    <!-- 答题界面 -->
+    <view wx:elif="{{!quizFinished}}" class="quiz-screen">
+      <!-- 顶部信息栏 -->
+      <view class="quiz-header">
+        <view class="quiz-progress">
+          <text class="progress-current">{{quizIndex + 1}}</text>
+          <text class="progress-divider">/</text>
+          <text class="progress-total">5</text>
+        </view>
+        <view class="quiz-score">
+          <text class="score-icon">⭐</text>
+          <text class="score-value">{{score}}</text>
+        </view>
+      </view>
+
+      <!-- 题目卡片 -->
+      <view class="question-card">
+        <view class="question-number">第 {{quizIndex + 1}} 题</view>
+        <text class="question-text">{{currentQ.question}}</text>
+      </view>
+
+      <!-- 选项列表 -->
+      <view class="options-list">
+        <view wx:for="{{currentQ.options}}" wx:key="index"
+              class="option-item {{selected === index ? (correct ? 'option-correct' : 'option-wrong') : ''}} {{showAns && index === currentQ.correctIndex ? 'option-correct' : ''}}"
+              bindtap="selectOpt" data-idx="{{index}}">
+          <view class="option-label">{{['A','B','C','D'][index]}}</view>
+          <text class="option-text">{{item}}</text>
+          <view wx:if="{{showAns && index === currentQ.correctIndex}}" class="option-check">✓</view>
+          <view wx:elif="{{selected === index && !correct}}" class="option-cross">✗</view>
+        </view>
+      </view>
+
+      <!-- 下一题按钮 -->
+      <button wx:if="{{showAns}}" class="btn-next" bindtap="nextQ">
+        <text>{{quizIndex < 4 ? '下一题' : '查看结果'}}</text>
+      </button>
+    </view>
+
+    <!-- 结果界面 -->
+    <view wx:else class="result-screen">
+      <view class="result-decoration"></view>
+      <view class="result-icon">{{score >= 80 ? '🏆' : score >= 60 ? '👍' : '💪'}}</view>
+      <text class="result-title">{{score >= 80 ? '优秀' : score >= 60 ? '良好' : '继续加油'}}</text>
+      <view class="result-score-wrapper">
+        <text class="result-score">{{score}}</text>
+        <text class="result-unit">分</text>
+      </view>
+      <view class="result-actions">
+        <button class="result-btn btn-retry" bindtap="restartQuiz">
+          <text>再来一次</text>
+        </button>
+        <button class="result-btn btn-battle" bindtap="switchToBattle">
+          <text>挑战对战</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 对战模式 - 游戏大厅风格 -->
+  <view wx:elif="{{mode === 'battle'}}" class="content mode-battle">
+    <!-- 开始界面 - 真人匹配大厅 -->
+    <view wx:if="{{!battleStarted && !isMatching}}" class="game-lobby battle-lobby">
+      <!-- 背景装饰 -->
+      <view class="lobby-decoration">
+        <text class="deco-star deco-1">⚔️</text>
+        <text class="deco-star deco-2">⚔️</text>
+        <text class="deco-star deco-3">⚔️</text>
+        <view class="deco-wave deco-wave-gold"></view>
+      </view>
+
+      <!-- 标题区 -->
+      <view class="lobby-header">
+        <view class="lobby-icon">⚔️</view>
+        <text class="lobby-title font-serif">知识对战</text>
+        <text class="lobby-subtitle">与其他玩家一决高下</text>
+      </view>
+
+      <!-- 在线人数 -->
+      <view class="online-status">
+        <view class="online-dot"></view>
+        <text class="online-text">当前在线 {{onlineCount}} 人</text>
+      </view>
+
+      <!-- 仪表盘卡片 -->
+      <view class="dashboard-grid">
+        <view class="dashboard-card">
+          <text class="dashboard-icon">🎮</text>
+          <text class="dashboard-value">5</text>
+          <text class="dashboard-label">回合</text>
+        </view>
+        <view class="dashboard-card">
+          <text class="dashboard-icon">⏱️</text>
+          <text class="dashboard-value">10s</text>
+          <text class="dashboard-label">每题</text>
+        </view>
+        <view class="dashboard-card">
+          <text class="dashboard-icon">🏅</text>
+          <text class="dashboard-value">{{winRate}}%</text>
+          <text class="dashboard-label">胜率</text>
+        </view>
+        <view class="dashboard-card">
+          <text class="dashboard-icon">👑</text>
+          <text class="dashboard-value">{{winStreak}}</text>
+          <text class="dashboard-label">连胜</text>
+        </view>
+      </view>
+
+      <!-- 主按钮 CTA -->
+      <button class="cta-button cta-glow cta-battle" bindtap="startMatching">
+        <view class="cta-shine"></view>
+        <text class="cta-text">开始匹配</text>
+      </button>
+    </view>
+
+    <!-- 匹配中界面 -->
+    <view wx:elif="{{isMatching}}" class="matching-screen">
+      <view class="matching-animation">
+        <view class="matching-ring"></view>
+        <view class="matching-ring matching-ring-2"></view>
+        <text class="matching-icon">🔍</text>
+      </view>
+      <text class="matching-title">正在匹配对手...</text>
+      <text class="matching-time">已等待 {{matchingTime}}s</text>
+      <button class="btn-cancel-match" bindtap="cancelMatching">取消匹配</button>
+    </view>
+
+    <!-- 匹配成功界面 -->
+    <view wx:elif="{{matchFound && !battleStarted}}" class="match-found-screen">
+      <view class="match-players">
+        <view class="match-player">
+          <image class="match-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="match-name">{{userInfo.nickName || '我'}}</text>
+        </view>
+        <view class="match-vs">
+          <text class="vs-text">VS</text>
+        </view>
+        <view class="match-player">
+          <image class="match-avatar" src="{{opponent.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="match-name">{{opponent.nickName || '对手'}}</text>
+        </view>
+      </view>
+      <text class="match-countdown">{{matchCountdown}}s 后开始</text>
+    </view>
+
+    <!-- 对战界面 -->
+    <view wx:elif="{{battleStarted && !battleFinished}}" class="battle-screen">
+      <!-- 圆形倒计时器 -->
+      <view class="countdown-timer {{battleTimeLeft <= 3 ? 'timer-warning' : ''}}">
+        <view class="timer-circle">
+          <svg class="timer-svg" viewBox="0 0 100 100">
+            <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+            <circle class="timer-progress" cx="50" cy="50" r="45" 
+                    style="stroke-dashoffset: {{(1 - battleTimeLeft / 10) * 283}}"></circle>
+          </svg>
+          <view class="timer-text">{{battleTimeLeft}}</view>
+        </view>
+        <text class="timer-label">秒</text>
+      </view>
+
+      <!-- 对战双方信息 -->
+      <view class="battle-players">
+        <view class="battle-player player-me {{battleSel !== null && correct ? 'player-win' : ''}}">
+          <view class="player-avatar-wrapper">
+            <image class="player-avatar-img" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+            <view wx:if="{{battleSel !== null && correct}}" class="player-effect">✓</view>
+          </view>
+          <text class="player-name">{{userInfo.nickName || '我'}}</text>
+          <view class="player-score-wrapper">
+            <text class="player-score">{{myScore}}</text>
+          </view>
+        </view>
+
+        <view class="battle-vs">
+          <text class="vs-text">VS</text>
+          <text class="vs-round">第{{battleIdx + 1}}/5回合</text>
+        </view>
+
+        <view class="battle-player player-opponent {{battleSel !== null && opponentAnswered ? 'player-win' : ''}}">
+          <view class="player-avatar-wrapper">
+            <image class="player-avatar-img" src="{{opponent.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+            <view wx:if="{{battleSel !== null && opponentAnswered}}" class="player-effect">✓</view>
+          </view>
+          <text class="player-name">{{opponent.nickName || '对手'}}</text>
+          <view class="player-score-wrapper">
+            <text class="player-score">{{opponentScore}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 题目 -->
+      <view class="battle-question-card">
+        <text class="battle-question">{{battleQ.question}}</text>
+      </view>
+
+      <!-- 选项 -->
+      <view class="battle-options">
+        <view wx:for="{{battleQ.options}}" wx:key="index"
+              class="battle-option {{battleSel === index ? (index === battleQ.correctIndex ? 'option-correct-battle' : 'option-wrong-battle') : ''}} {{showBattleAns && index === battleQ.correctIndex ? 'option-correct-battle' : ''}}"
+              bindtap="selectBattleOpt" data-idx="{{index}}">
+          <view class="option-label">{{['A','B','C','D'][index]}}</view>
+          <text class="option-text">{{item}}</text>
+          <view wx:if="{{showBattleAns && index === battleQ.correctIndex}}" class="option-check">✓</view>
+          <view wx:elif="{{battleSel === index && index !== battleQ.correctIndex}}" class="option-cross">✗</view>
+        </view>
+      </view>
+
+      <!-- 解析气泡 -->
+      <view wx:if="{{showBattleAns && battleQ.explanation}}" class="explanation-bubble">
+        <view class="bubble-header">
+          <text class="bubble-icon">💡</text>
+          <text class="bubble-title">知识点解析</text>
+        </view>
+        <text class="bubble-content">{{battleQ.explanation}}</text>
+      </view>
+    </view>
+
+    <!-- 结果界面 -->
+    <view wx:elif="{{battleFinished}}" class="result-screen battle-result">
+      <view class="result-decoration battle-result-decoration"></view>
+      <view class="result-icon">{{won ? '🎉' : (isDraw ? '🤝' : '💪')}}</view>
+      <text class="result-title">{{won ? '胜利' : (isDraw ? '平局' : '惜败')}}</text>
+      
+      <!-- VS 进度条 -->
+      <view class="vs-progress-bar">
+        <view class="vs-bar-wrapper">
+          <view class="vs-bar-fill vs-bar-me" style="width: {{myScore}}%"></view>
+          <view class="vs-bar-fill vs-bar-opponent" style="width: {{opponentScore}}%"></view>
+        </view>
+        <view class="vs-bar-labels">
+          <text class="vs-bar-label">我 {{myScore}}</text>
+          <text class="vs-bar-label">{{opponent.nickName || '对手'}} {{opponentScore}}</text>
+        </view>
+      </view>
+
+      <!-- 分数展示 -->
+      <view class="battle-final-score">
+        <view class="final-score-item">
+          <image class="final-avatar-img" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="final-score">{{myScore}}</text>
+        </view>
+        <text class="final-divider">:</text>
+        <view class="final-score-item">
+          <image class="final-avatar-img" src="{{opponent.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="final-score">{{opponentScore}}</text>
+        </view>
+      </view>
+
+      <!-- 勋章展示 -->
+      <view wx:if="{{myScore === 100}}" class="medal-display">
+        <view class="medal-icon">🏅</view>
+        <text class="medal-title">金牌讲解员</text>
+        <text class="medal-desc">全部答对，完美表现！</text>
+      </view>
+      <view wx:elif="{{myScore >= 80}}" class="medal-display">
+        <view class="medal-icon">🥈</view>
+        <text class="medal-title">银牌讲解员</text>
+        <text class="medal-desc">表现优秀，继续加油！</text>
+      </view>
+      <view wx:elif="{{myScore >= 60}}" class="medal-display">
+        <view class="medal-icon">🥉</view>
+        <text class="medal-title">铜牌讲解员</text>
+        <text class="medal-desc">不错的开始！</text>
+      </view>
+
+      <view class="result-actions">
+        <button class="result-btn btn-retry" bindtap="restartBattle">
+          <text>再战一局</text>
+        </button>
+        <button class="result-btn btn-learn" bindtap="switchToLearn">
+          <text>返回学习</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

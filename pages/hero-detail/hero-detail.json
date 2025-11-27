@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "英雄详情",
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "skeleton": "/components/skeleton/skeleton"
+  },
+  "navigationBarBackgroundColor": "#D32F2F",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#FAFAFA"
+}

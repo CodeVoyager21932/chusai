@@ -1,0 +1,261 @@
+/* components/daily-letter/daily-letter.wxss */
+.letter-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter-modal.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.letter-container {
+  position: relative;
+  width: 600rpx;
+  height: 800rpx;
+  perspective: 1000px;
+  z-index: 2;
+}
+
+/* 信封样式 */
+.envelope-cover {
+  width: 100%;
+  height: 100%;
+  background: #F5E6D3; /* 信封米黄色 */
+  border-radius: 16rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  border: 2rpx solid #E0C09E;
+}
+
+/* 邮票 */
+.stamp {
+  position: absolute;
+  top: 40rpx;
+  right: 40rpx;
+  width: 100rpx;
+  height: 120rpx;
+  background: #D32F2F;
+  border: 4rpx dashed #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2rpx 2rpx 8rpx rgba(0,0,0,0.2);
+}
+
+.stamp-text {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 28rpx;
+  transform: rotate(-15deg);
+}
+
+/* 邮戳 */
+.postmark {
+  position: absolute;
+  top: 60rpx;
+  right: 120rpx;
+  width: 160rpx;
+  height: 160rpx;
+  border: 4rpx solid rgba(50, 50, 50, 0.6);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-20deg);
+  opacity: 0.7;
+}
+
+.postmark text {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 2rpx;
+}
+
+.recipient {
+  margin-top: 40rpx;
+  text-align: center;
+}
+
+.recipient .label {
+  font-size: 28rpx;
+  color: #8D6E63;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.recipient .name {
+  font-size: 48rpx;
+  font-family: 'Songti SC', serif;
+  color: #3E2723;
+  font-weight: 700;
+  border-bottom: 2rpx solid #8D6E63;
+  padding-bottom: 8rpx;
+}
+
+/* 火漆印 */
+.wax-seal {
+  width: 120rpx;
+  height: 120rpx;
+  background: #B71C1C;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 80rpx;
+  box-shadow: 0 8rpx 16rpx rgba(0,0,0,0.3), inset 0 4rpx 8rpx rgba(255,255,255,0.2);
+  border: 4rpx solid #8E0000;
+}
+
+.wax-seal text {
+  color: #FFCDD2;
+  font-family: 'Songti SC', serif;
+  font-size: 40rpx;
+  font-weight: 700;
+  text-shadow: 0 2rpx 2rpx rgba(0,0,0,0.5);
+}
+
+.tap-hint {
+  margin-top: 40rpx;
+  font-size: 24rpx;
+  color: #8D6E63;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* 信纸样式 */
+.letter-paper {
+  width: 100%;
+  height: 100%;
+  background: #FFFBF0;
+  padding: 60rpx 40rpx;
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 8rpx;
+  box-shadow: 0 10rpx 40rpx rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  animation: unfold 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: top center;
+}
+
+@keyframes unfold {
+  0% { transform: scaleY(0.1); opacity: 0; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+.paper-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(#E0E0E0 1px, transparent 1px);
+  background-size: 100% 48rpx; /* 信纸横线 */
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.letter-header {
+  text-align: right;
+  margin-bottom: 40rpx;
+}
+
+.date-text {
+  font-family: 'Courier New', monospace;
+  color: #5D4037;
+  font-size: 24rpx;
+}
+
+.letter-body {
+  flex: 1;
+}
+
+.greeting {
+  font-size: 32rpx;
+  color: #3E2723;
+  font-weight: 700;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.content-text {
+  font-size: 30rpx;
+  line-height: 1.8; /* 匹配信纸横线 */
+  color: #3E2723;
+  text-align: justify;
+  text-indent: 2em;
+  font-family: 'Songti SC', serif;
+}
+
+.quote-highlight {
+  margin-top: 40rpx;
+  padding: 24rpx;
+  background: rgba(211, 47, 47, 0.05);
+  border-left: 4rpx solid #D32F2F;
+  font-style: italic;
+  color: #B71C1C;
+  font-size: 36rpx;
+  line-height: 1.6;
+}
+
+.letter-footer {
+  margin-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.author {
+  font-family: 'Songti SC', serif;
+  font-size: 32rpx;
+  color: #3E2723;
+  margin-bottom: 32rpx;
+}
+
+.action-btn {
+  background: #D32F2F;
+  color: #FFFFFF;
+  padding: 16rpx 48rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(211, 47, 47, 0.3);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}

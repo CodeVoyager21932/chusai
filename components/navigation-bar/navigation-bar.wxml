@@ -1,0 +1,27 @@
+<view class="nav-placeholder" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+<view class="nav-bar glass-effect" style="height: {{statusBarHeight + navBarHeight}}px; background: {{background}};">
+  <!-- 状态栏占位 -->
+  <view style="height: {{statusBarHeight}}px;"></view>
+
+  <!-- 导航栏内容区 -->
+  <view class="nav-content" style="height: {{navBarHeight}}px;">
+    
+    <!-- 左侧按钮区 -->
+    <view class="nav-capsule" style="height: {{menuButtonHeight}}px; top: {{menuButtonTop}}px;">
+      <view class="capsule-btn" bindtap="goBack" wx:if="{{showBack}}">
+        <image class="icon-back" src="data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 18L9 12L15 6' stroke='%23D32F2F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"></image>
+      </view>
+      <view class="capsule-divider" wx:if="{{showBack && showHome}}"></view>
+      <view class="capsule-btn" bindtap="goHome" wx:if="{{showHome}}">
+        <image class="icon-home" src="data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z' stroke='%23D32F2F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22' stroke='%23D32F2F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"></image>
+      </view>
+    </view>
+
+    <!-- 标题区 -->
+    <view class="nav-title font-serif" style="line-height: {{navBarHeight}}px; width: {{navBarWidth}}px;">
+      {{title}}
+    </view>
+
+  </view>
+</view>

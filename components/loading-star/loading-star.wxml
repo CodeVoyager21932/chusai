@@ -1,0 +1,18 @@
+<!--components/loading-star/loading-star.wxml-->
+<view class="loading-container" wx:if="{{show}}">
+  <view class="star-system">
+    <!-- 核心五角星 -->
+    <view class="core-star">★</view>
+    
+    <!-- 汇聚的火苗粒子 -->
+    <view class="particle p1"></view>
+    <view class="particle p2"></view>
+    <view class="particle p3"></view>
+    <view class="particle p4"></view>
+    <view class="particle p5"></view>
+    <view class="particle p6"></view>
+    <view class="particle p7"></view>
+    <view class="particle p8"></view>
+  </view>
+  <view class="loading-text">星火汇聚中...</view>
+</view>

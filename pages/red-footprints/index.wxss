@@ -1,0 +1,87 @@
+.red-footprints {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+.info-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx;
+  max-height: 50vh;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.panel-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #DC2626;
+}
+
+.location-count {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.location-list {
+  max-height: 400rpx;
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: #FEF2F2;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.location-item:active {
+  background: #FEE2E2;
+  transform: scale(0.98);
+}
+
+.location-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.location-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.location-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 4rpx;
+}
+
+.location-distance {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.location-arrow {
+  font-size: 32rpx;
+  color: #DC2626;
+}

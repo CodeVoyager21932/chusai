@@ -1,0 +1,134 @@
+<!-- 英雄详情页面 -->
+<navigation-bar title="英雄详情" showBack="{{true}}" showHome="{{true}}" background="transparent"></navigation-bar>
+<view class="hero-detail-page">
+  <!-- 骨架屏包裹 -->
+  <skeleton loading="{{loading}}">
+    <!-- 沉浸式头部 (Parallax Header) -->
+    <view class="hero-header-immersive">
+      <image class="hero-bg-image" src="{{hero.avatar}}" mode="aspectFill" />
+      <view class="hero-header-overlay"></view>
+      <view class="hero-header-content animate-slide-up">
+        <view class="hero-avatar-wrapper">
+          <image class="hero-avatar" src="{{hero.avatar}}" mode="aspectFill" />
+        </view>
+        <view class="hero-title-group">
+          <text class="hero-name font-serif">{{hero.name}}</text>
+          <view class="hero-badges">
+            <text class="badge-era">{{hero.era}}</text>
+            <text class="badge-title">{{hero.title}}</text>
+          </view>
+          <text class="hero-years">{{hero.birth_year}} - {{hero.death_year || '至今'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 内容区域 (Glassmorphism Cards) -->
+    <view class="content-scroll">
+      <!-- 生平事迹 -->
+      <view class="content-card animate-slide-up" style="animation-delay: 0.1s;">
+        <view class="section-header">
+          <image class="section-icon-img" src="/images/icons/biography.png" mode="aspectFit" />
+          <text class="section-title font-serif">生平事迹</text>
+        </view>
+        <view class="text-justified-container">
+          <!-- Drop Cap Implementation -->
+          <view class="biography-content">
+            <text class="drop-cap font-serif">{{hero.biography_first_char}}</text>
+            <text class="biography-text">{{hero.biography_rest}}</text>
+          </view>
+        </view>
+        <!-- SVG Divider -->
+        <view class="section-divider">
+          <image class="divider-img" src="/images/decorations/ink-stroke.svg" mode="widthFix" />
+        </view>
+      </view>
+
+      <!-- 主要贡献 -->
+      <view class="content-card animate-slide-up" style="animation-delay: 0.2s;">
+        <view class="section-header">
+          <image class="section-icon-img" src="/images/icons/medal.png" mode="aspectFit" />
+          <text class="section-title font-serif">主要贡献</text>
+        </view>
+        <view class="deeds-grid">
+          <view 
+            class="deed-medal"
+            wx:for="{{hero.main_deeds}}"
+            wx:key="index"
+          >
+            <view class="medal-icon">
+              <text>🎖️</text>
+            </view>
+            <text class="medal-text">{{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 名言警句 -->
+      <view class="content-card animate-slide-up" style="animation-delay: 0.3s;" wx:if="{{hero.famous_quotes && hero.famous_quotes.length > 0}}">
+        <view class="section-header">
+          <image class="section-icon-img" src="/images/icons/quote.png" mode="aspectFit" />
+          <text class="section-title font-serif">名言警句</text>
+        </view>
+        <view class="quotes-container">
+          <view 
+            class="quote-magazine-style"
+            wx:for="{{hero.famous_quotes}}"
+            wx:key="index"
+          >
+            <text class="quote-symbol-large left">“</text>
+            <text class="quote-content font-serif">{{item}}</text>
+            <text class="quote-symbol-large right">”</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 底部安全区 -->
+      <view class="safe-bottom-spacer"></view>
+    </view>
+
+    <!-- 底部操作栏 (Floating Glass) -->
+    <view class="action-bar-glass animate-fade-in">
+      <button class="action-btn secondary" open-type="share">
+        <text class="icon-share">📤</text>
+        <text>分享好友</text>
+      </button>
+      <view class="action-btn secondary" bindtap="generatePoster">
+        <text class="icon-share">🖼️</text>
+        <text>生成海报</text>
+      </view>
+      <view class="action-btn primary" bindtap="onChatWithHero">
+        <text class="icon-chat">🤖</text>
+        <text>与{{hero.name}}对话</text>
+      </view>
+    </view>
+  </skeleton>
+
+  <!-- 海报画布 (隐藏) -->
+  <canvas canvas-id="posterCanvas" class="poster-canvas-hidden" style="width: 375px; height: 600px;"></canvas>
+
+  <!-- 海报预览弹窗 -->
+  <view wx:if="{{showPosterPreview}}" class="poster-modal" bindtap="closePosterPreview">
+    <view class="poster-modal-content" catchtap="">
+      <view class="poster-preview-wrapper">
+        <image class="poster-preview-img" src="{{posterPath}}" mode="widthFix"></image>
+      </view>
+      <view class="poster-actions">
+        <button class="poster-btn save-btn" bindtap="savePoster">
+          <text>💾</text>
+          <text>保存到相册</text>
+        </button>
+        <button class="poster-btn close-btn" bindtap="closePosterPreview">
+          <text>关闭</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 生成中提示 -->
+  <view wx:if="{{generatingPoster}}" class="generating-mask">
+    <view class="generating-content">
+      <view class="generating-spinner"></view>
+      <text class="generating-text">正在生成海报...</text>
+    </view>
+  </view>
+</view>

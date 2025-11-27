@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "daily-sign-modal": "/components/daily-sign-modal/daily-sign-modal",
+    "audio-player": "/components/audio-player/audio-player",
+    "daily-letter": "/components/daily-letter/daily-letter",
+    "badge-modal": "/components/badge-modal/badge-modal"
+  },
+  "navigationBarTitleText": "星火",
+  "navigationStyle": "custom"
+}

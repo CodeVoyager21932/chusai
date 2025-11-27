@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/ai-chat/index",
+    "pages/knowledge-graph/index",
+    "pages/spark-prairie/index",
+    "pages/red-heritage/index",
+    "pages/red-footprints/index",
+    "pages/hero-gallery/hero-gallery",
+    "pages/hero-detail/hero-detail",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F7F8FA",
+    "navigationBarTitleText": "星火",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F8FA",
+    "navigationStyle": "custom"
+  },
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "loading-star": "/components/loading-star/loading-star",
+    "global-search": "/components/global-search/global-search",
+    "daily-path": "/components/daily-path/daily-path"
+  },
+  "cloud": true,
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

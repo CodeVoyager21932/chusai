@@ -1,0 +1,48 @@
+<!--components/daily-letter/daily-letter.wxml-->
+<view class="letter-modal {{visible ? 'visible' : ''}}" catchtouchmove="preventScroll">
+  <view class="modal-mask" bindtap="close"></view>
+  
+  <view class="letter-container {{isOpen ? 'open' : ''}}">
+    <!-- 信封封面 -->
+    <view class="envelope-cover" bindtap="openLetter" wx:if="{{!isOpen}}">
+      <view class="stamp">
+        <text class="stamp-text">1921</text>
+      </view>
+      <view class="postmark">
+        <text>SHANGHAI</text>
+        <text class="date">JUL.23</text>
+      </view>
+      <view class="recipient">
+        <text class="label">致：</text>
+        <text class="name">未来的接班人</text>
+      </view>
+      <view class="wax-seal">
+        <text>星火</text>
+      </view>
+      <view class="tap-hint">点击开启时空来信</view>
+    </view>
+
+    <!-- 信纸内容 -->
+    <view class="letter-paper" wx:else>
+      <view class="paper-texture"></view>
+      <view class="letter-header">
+        <text class="date-text">{{todayDate}}</text>
+      </view>
+      <view class="letter-body">
+        <text class="greeting">亲爱的同志：</text>
+        <view class="content-text">
+          <text>{{content}}</text>
+        </view>
+        <view class="quote-highlight">
+          <text>“{{quote}}”</text>
+        </view>
+      </view>
+      <view class="letter-footer">
+        <text class="author">—— {{author}}</text>
+        <view class="action-btn" bindtap="checkIn">
+          <text>签收信念</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

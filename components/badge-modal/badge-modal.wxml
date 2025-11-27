@@ -1,0 +1,38 @@
+<!--components/badge-modal/badge-modal.wxml-->
+<view class="badge-modal {{visible ? 'visible' : ''}}" catchtouchmove="preventScroll">
+  <view class="modal-mask" bindtap="close"></view>
+  
+  <view class="modal-content animate-pop-in">
+    <!-- 光效背景 -->
+    <view class="light-burst"></view>
+    
+    <!-- 3D 徽章容器 -->
+    <view class="badge-stage">
+      <view class="badge-3d">
+        <view class="badge-face front">
+          <view class="badge-inner">
+            <text class="badge-icon">{{badge.icon || '🎖️'}}</text>
+          </view>
+          <view class="badge-shine"></view>
+        </view>
+        <view class="badge-face back"></view>
+        <view class="badge-side"></view>
+      </view>
+      <view class="badge-shadow"></view>
+    </view>
+
+    <!-- 文本信息 -->
+    <view class="info-section">
+      <text class="badge-name">{{badge.name || '未命名徽章'}}</text>
+      <text class="badge-desc">{{badge.desc || '暂无描述'}}</text>
+      <view class="badge-meta">
+        <text>获得时间：{{badge.date || '刚刚'}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-btn" bindtap="close">
+      <text>收入珍藏馆</text>
+    </view>
+  </view>
+</view>

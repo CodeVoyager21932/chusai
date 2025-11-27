@@ -1,0 +1,78 @@
+var startX = 0
+var startY = 0
+var lastX = 0
+var lastY = 0
+
+function touchStart(event, ownerInstance) {
+  var touch = event.touches[0]
+  startX = touch.clientX
+  startY = touch.clientY
+  lastX = startX
+  lastY = startY
+  
+  var instance = ownerInstance.selectComponent('.today-hero-card')
+  instance.addClass('touching')
+}
+
+function touchMove(event, ownerInstance) {
+  var touch = event.touches[0]
+  var currentX = touch.clientX
+  var currentY = touch.clientY
+  
+  // 计算移动距离
+  var moveX = currentX - startX
+  var moveY = currentY - startY
+  
+  // 限制最大旋转角度
+  var maxRotate = 10
+  
+  // 简单的映射：X轴移动导致Y轴旋转，Y轴移动导致X轴旋转
+  // 屏幕宽度假设为 375 (逻辑像素)，这里做一个简单的归一化
+  var rotateY = (moveX / 200) * maxRotate
+  var rotateX = -(moveY / 200) * maxRotate // Y轴移动向上(负)应该导致X轴正向旋转(仰视)
+  
+  // 限制范围
+  if (rotateY > maxRotate) rotateY = maxRotate
+  if (rotateY < -maxRotate) rotateY = -maxRotate
+  if (rotateX > maxRotate) rotateX = maxRotate
+  if (rotateX < -maxRotate) rotateX = -maxRotate
+  
+  var instance = ownerInstance.selectComponent('.today-hero-card')
+  var glare = ownerInstance.selectComponent('.card-glare')
+  
+  // 应用 3D 变换
+  instance.setStyle({
+    'transform': 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(0.98)'
+  })
+  
+  // 计算光效位置 (随旋转反向移动)
+  var glareX = 50 - (rotateY / maxRotate) * 50
+  var glareY = 50 - (rotateX / maxRotate) * 50
+  
+  glare.setStyle({
+    'background': 'radial-gradient(circle at ' + glareX + '% ' + glareY + '%, rgba(255, 255, 255, 0.3) 0%, transparent 50%)',
+    'opacity': 1
+  })
+}
+
+function touchEnd(event, ownerInstance) {
+  var instance = ownerInstance.selectComponent('.today-hero-card')
+  var glare = ownerInstance.selectComponent('.card-glare')
+  
+  instance.removeClass('touching')
+  
+  // 复位
+  instance.setStyle({
+    'transform': 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)'
+  })
+  
+  glare.setStyle({
+    'opacity': 0
+  })
+}
+
+module.exports = {
+  touchStart: touchStart,
+  touchMove: touchMove,
+  touchEnd: touchEnd
+}

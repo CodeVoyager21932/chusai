@@ -1,0 +1,29 @@
+<view class="daily-path-container {{show ? 'show' : ''}}">
+  <!-- 触发按钮 -->
+  <view class="path-bubble" bindtap="togglePath">
+    <view class="bubble-icon">✨</view>
+    <view class="bubble-content">
+      <text class="bubble-title">今日成长</text>
+      <text class="bubble-progress">{{completedTasks}}/{{totalTasks}}</text>
+    </view>
+  </view>
+
+  <!-- 展开的任务列表 -->
+  <view wx:if="{{expanded}}" class="task-list">
+    <view class="task-header">
+      <text class="header-title">每日任务</text>
+      <view class="close-btn" bindtap="closePath">×</view>
+    </view>
+
+    <view wx:for="{{tasks}}" wx:key="id" class="task-item">
+      <view class="task-checkbox {{item.completed ? 'checked' : ''}}" 
+            bindtap="toggleTask" data-id="{{item.id}}">
+        <text wx:if="{{item.completed}}">✓</text>
+      </view>
+      <view class="task-info">
+        <text class="task-name">{{item.name}}</text>
+        <text class="task-reward">+{{item.reward}} 积分</text>
+      </view>
+    </view>
+  </view>
+</view>

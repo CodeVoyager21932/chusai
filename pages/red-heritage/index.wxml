@@ -1,0 +1,43 @@
+<navigation-bar title="红色珍藏" />
+
+<view class="red-heritage">
+  <!-- 展厅主视图 -->
+  <view class="gallery-view">
+    <view class="section-title">
+      <text class="title-text">珍藏展厅</text>
+      <text class="subtitle">已收藏 {{collectedCount}}/{{totalCount}}</text>
+    </view>
+
+    <!-- 藏品网格 -->
+    <view class="heritage-grid">
+      <view wx:for="{{heritageItems}}" wx:key="id" 
+            class="heritage-item {{item.collected ? 'collected' : 'locked'}}"
+            bindtap="viewDetail" data-id="{{item.id}}">
+        <image class="item-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="item-info">
+          <text class="item-name">{{item.name}}</text>
+          <text wx:if="!item.collected" class="locked-hint">未解锁</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 悬浮抽卡入口 -->
+  <view class="mystery-entrance" bindtap="openMysteryBox">
+    <view class="entrance-icon">🎁</view>
+    <text class="entrance-text">解密抽卡</text>
+  </view>
+</view>
+
+<!-- 抽卡弹窗 -->
+<view wx:if="{{showMysteryBox}}" class="mystery-modal" bindtap="closeMysteryBox">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="mystery-box">
+      <text class="box-title">机密档案解密</text>
+      <view class="box-animation">
+        <image src="/images/mystery-box.png" class="box-image" />
+      </view>
+      <button class="draw-button" bindtap="drawCard">开启档案</button>
+    </view>
+  </view>
+</view>
