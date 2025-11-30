@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+import { GlobalSearch } from "@/components/search/GlobalSearch";
+import { MiniPlayer } from "@/components/layout/MiniPlayer";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "星火 - 红色教育学习平台",
@@ -21,11 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body className={`${inter.variable} antialiased bg-neutral-50`}>
+      <body className="font-sans antialiased bg-neutral-50">
         <Navigation />
         <main className="min-h-screen pb-20 md:pb-0 md:ml-64">
           {children}
         </main>
+        <GlobalSearch />
+        <MiniPlayer />
+        <Toaster />
       </body>
     </html>
   );

@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Send, User, Bot, Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card } from '@/components/ui/card';
 import { dataManager } from '@/services/dataManager';
 import { useUserStore } from '@/stores/userStore';
 import { ChatMessage, Hero } from '@/types/models';
@@ -15,7 +14,7 @@ import { cn } from '@/lib/utils';
 
 const CHAT_STORAGE_KEY = 'xinhuo_chat_history';
 
-export default function AIChatPage() {
+function AIChatContent() {
   const searchParams = useSearchParams();
   const heroId = searchParams.get('heroId');
   const { incrementAiChatCount } = useUserStore();
@@ -235,4 +234,17 @@ function generateAIResponse(question: string, hero: Hero | null): string {
   ];
 
   return responses[Math.floor(Math.random() * responses.length)];
+}
+
+// 导出包装组件
+export default function AIChatPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-red-500" />
+      </div>
+    }>
+      <AIChatContent />
+    </Suspense>
+  );
 }
