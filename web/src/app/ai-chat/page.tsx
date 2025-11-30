@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Send, User, Bot, Loader2 } from 'lucide-react';
+import { Send, User, Bot, Loader2, Settings } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { dataManager } from '@/services/dataManager';
+import { aiService } from '@/services/aiService';
 import { useUserStore } from '@/stores/userStore';
 import { ChatMessage, Hero } from '@/types/models';
 import { cn } from '@/lib/utils';
@@ -42,6 +44,8 @@ function AIChatContent() {
       const hero = dataManager.getHeroById(heroId);
       if (hero) {
         setSelectedHero(hero);
+        // 切换角色时重置 AI 对话历史
+        aiService.resetConversation();
       }
     }
   }, [heroId]);
@@ -73,9 +77,10 @@ function AIChatContent() {
     setInput('');
     setIsLoading(true);
 
-    // 模拟 AI 响应
-    setTimeout(() => {
-      const aiResponse = generateAIResponse(userMessage.content, selectedHero);
+    try {
+      // 调用 AI 服务获取响应
+      const aiResponse = await aiService.chat(userMessage.content, selectedHero);
+      
       const aiMessage: ChatMessage = {
         id: `msg_${Date.now()}`,
         role: 'assistant',
@@ -85,12 +90,24 @@ function AIChatContent() {
       };
       
       setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
       incrementAiChatCount();
-    }, 1000 + Math.random() * 1000);
+    } catch (error) {
+      console.error('AI chat error:', error);
+      // 显示错误消息
+      const errorMessage: ChatMessage = {
+        id: `msg_${Date.now()}`,
+        role: 'assistant',
+        content: '抱歉，我暂时无法回答，请稍后再试。',
+        timestamp: Date.now(),
+        heroId: selectedHero?.id,
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -100,7 +117,10 @@ function AIChatContent() {
   const clearHistory = () => {
     setMessages([]);
     localStorage.removeItem(CHAT_STORAGE_KEY);
+    aiService.resetConversation();
   };
+
+  const isAIConfigured = aiService.isConfigured();
 
   return (
     <>
@@ -129,6 +149,11 @@ function AIChatContent() {
                   ? `我可以和你分享我的故事和经历` 
                   : '我可以帮你了解党史知识，有什么想问的吗？'}
               </p>
+              {!isAIConfigured && (
+                <Badge variant="outline" className="mt-3 text-amber-600 border-amber-200 bg-amber-50">
+                  演示模式 - 未配置 AI API
+                </Badge>
+              )}
             </div>
           )}
 
@@ -193,7 +218,7 @@ function AIChatContent() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder={selectedHero ? `向${selectedHero.name}提问...` : '输入你的问题...'}
               disabled={isLoading}
               className="flex-1"
@@ -217,23 +242,6 @@ function AIChatContent() {
       </div>
     </>
   );
-}
-
-// 模拟 AI 响应生成
-function generateAIResponse(question: string, hero: Hero | null): string {
-  const responses = hero ? [
-    `作为${hero.title}，我想告诉你：${hero.famous_quotes[0] || '我们要为人民服务。'}`,
-    `这是个好问题。在我的经历中，${hero.main_deeds[0]}是我最难忘的事情。`,
-    `我是${hero.name}，生于${hero.birth_year}年。${hero.biography.slice(0, 100)}...`,
-    `关于这个问题，我认为最重要的是坚持信念，就像我在${hero.era}所做的那样。`,
-  ] : [
-    '这是一个很好的问题！让我来为你解答。党史学习是非常重要的，它能帮助我们了解中国共产党的光辉历程。',
-    '你问得很好！在党的历史上，有很多值得我们学习的英雄人物和重要事件。',
-    '作为星火同志，我很高兴能和你一起学习党史。你可以问我关于任何英雄人物或历史事件的问题。',
-    '学习党史，传承红色基因，这是我们每个人的责任。让我们一起探索这段光辉的历史吧！',
-  ];
-
-  return responses[Math.floor(Math.random() * responses.length)];
 }
 
 // 导出包装组件
