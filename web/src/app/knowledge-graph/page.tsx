@@ -1,14 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
+import { GraphView, GraphNode, GraphEdge } from '@/components/knowledge';
 import { dataManager } from '@/services/dataManager';
 
 export default function KnowledgeGraphPage() {
   const [viewMode, setViewMode] = useState<'timeline' | 'graph'>('timeline');
+  const [selectedNodeInfo, setSelectedNodeInfo] = useState<GraphNode | null>(null);
+  
   const cards = dataManager.getCards();
+  const heroes = dataManager.getHeroes();
 
   // 按年份分组事件
   const timelineEvents = cards.map(card => ({
@@ -18,6 +22,76 @@ export default function KnowledgeGraphPage() {
     keywords: card.back_keywords,
     era: card.category,
   }));
+
+  // 构建图谱数据
+  const { graphNodes, graphEdges } = useMemo(() => {
+    const nodes: GraphNode[] = [];
+    const edges: GraphEdge[] = [];
+    
+    // 添加英雄节点
+    heroes.forEach(hero => {
+      nodes.push({
+        id: `hero-${hero.id}`,
+        label: hero.name,
+        type: 'hero',
+      });
+    });
+    
+    // 添加事件节点（从卡片中提取）
+    cards.slice(0, 8).forEach(card => {
+      nodes.push({
+        id: `event-${card.id}`,
+        label: card.front_title,
+        type: 'event',
+      });
+    });
+    
+    // 添加一些概念节点
+    const concepts = ['共产主义', '革命精神', '为人民服务', '艰苦奋斗'];
+    concepts.forEach((concept, index) => {
+      nodes.push({
+        id: `concept-${index}`,
+        label: concept,
+        type: 'concept',
+      });
+    });
+    
+    // 创建边（关联关系）
+    // 英雄与事件的关联
+    heroes.forEach((hero, index) => {
+      if (cards[index]) {
+        edges.push({
+          source: `hero-${hero.id}`,
+          target: `event-${cards[index].id}`,
+          label: '参与',
+        });
+      }
+    });
+    
+    // 英雄与概念的关联
+    heroes.forEach((hero, index) => {
+      edges.push({
+        source: `hero-${hero.id}`,
+        target: `concept-${index % concepts.length}`,
+        label: '践行',
+      });
+    });
+    
+    // 事件之间的关联
+    for (let i = 0; i < Math.min(cards.length - 1, 5); i++) {
+      edges.push({
+        source: `event-${cards[i].id}`,
+        target: `event-${cards[i + 1].id}`,
+        label: '影响',
+      });
+    }
+    
+    return { graphNodes: nodes, graphEdges: edges };
+  }, [heroes, cards]);
+
+  const handleNodeClick = (node: GraphNode) => {
+    setSelectedNodeInfo(node);
+  };
 
   return (
     <>
@@ -73,15 +147,29 @@ export default function KnowledgeGraphPage() {
           </TabsContent>
 
           <TabsContent value="graph" className="mt-0">
-            <Card className="p-8 text-center">
-              <div className="text-6xl mb-4">🔗</div>
-              <h3 className="text-lg font-medium text-neutral-900 mb-2">
-                关系图谱
-              </h3>
-              <p className="text-neutral-500 text-sm">
-                交互式知识图谱功能正在开发中...
-              </p>
-            </Card>
+            <div className="space-y-4">
+              <GraphView
+                nodes={graphNodes}
+                edges={graphEdges}
+                onNodeClick={handleNodeClick}
+              />
+              
+              {selectedNodeInfo && (
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2">{selectedNodeInfo.label}</h3>
+                  <p className="text-sm text-neutral-600">
+                    类型：{
+                      selectedNodeInfo.type === 'hero' ? '英雄人物' :
+                      selectedNodeInfo.type === 'event' ? '历史事件' :
+                      selectedNodeInfo.type === 'place' ? '地点' : '概念'
+                    }
+                  </p>
+                  <p className="text-xs text-neutral-500 mt-2">
+                    点击图谱中的节点查看关联关系，拖拽可平移视图，使用右上角按钮缩放。
+                  </p>
+                </Card>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
